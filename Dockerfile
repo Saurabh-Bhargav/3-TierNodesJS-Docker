@@ -5,10 +5,13 @@ FROM node:14-alpine
 WORKDIR /usr/src/app/client
 
 # Copy the client package.json and package-lock.json
-COPY client/package*.json ./
+COPY client/package*.json ./ 
 
 # Install the client dependencies
-RUN npm install --silent  # Use --silent to reduce output for clarity
+RUN npm install
+
+# Make webpack executable
+RUN chmod +x ./node_modules/.bin/webpack
 
 # Copy the client source code
 COPY client/ ./
@@ -23,16 +26,13 @@ WORKDIR /usr/src/app/server
 COPY server/package*.json ./
 
 # Install the server dependencies
-RUN npm install --silent  # Use --silent to reduce output for clarity
+RUN npm install
 
 # Copy the server source code
 COPY server/ ./
 
 # Copy the client build files to the server's public directory
 RUN mkdir -p ./public && cp -R /usr/src/app/client/dist/* ./public/
-
-# Set file permissions (if needed)
-RUN chmod -R 755 ./public  # Ensure that the public directory has execute permissions if necessary
 
 # Expose the port the server will run on
 EXPOSE 5000
