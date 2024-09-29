@@ -8,7 +8,7 @@ WORKDIR /usr/src/app/client
 COPY client/package*.json ./
 
 # Install the client dependencies
-RUN npm install
+RUN npm install --silent  # Use --silent to reduce output for clarity
 
 # Copy the client source code
 COPY client/ ./
@@ -23,7 +23,7 @@ WORKDIR /usr/src/app/server
 COPY server/package*.json ./
 
 # Install the server dependencies
-RUN npm install
+RUN npm install --silent  # Use --silent to reduce output for clarity
 
 # Copy the server source code
 COPY server/ ./
@@ -31,9 +31,11 @@ COPY server/ ./
 # Copy the client build files to the server's public directory
 RUN mkdir -p ./public && cp -R /usr/src/app/client/dist/* ./public/
 
+# Set file permissions (if needed)
+RUN chmod -R 755 ./public  # Ensure that the public directory has execute permissions if necessary
+
 # Expose the port the server will run on
 EXPOSE 5000
 
 # Command to run the server
 CMD ["npm", "start"]
-
